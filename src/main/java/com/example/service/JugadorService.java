@@ -6,6 +6,9 @@ import com.example.repository.EquipoRepository;
 import com.example.repository.JugadorRepository;
 import org.hibernate.boot.model.source.spi.SingularAttributeSourceToOne;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
@@ -92,9 +95,13 @@ public class JugadorService {
         System.out.println("Jugadores que juegan en un equipo, y son defensa");
         System.out.println(equipoRepository.findByNombreEquipoAndPosicion("FCB", "defensa"));
         System.out.println("");
+        System.out.println("-----------------------------------------------");
+        //System.out.println("Jugador con mas canastas de un equipo (ejemplo BCN)");
+        // showStatistics3(equipoRepository.findByJugadorMaxCanastasAnotaDeEquipo("FCB"));
+        //System.out.println("Jugador con mas canastas de un equipo (ejemplo BCN)" + equipoRepository.findByJugadorMaxCanastasAnotaDeEquipo("BCN", new PageRequest(0, 1)));
+        Pageable topOne = new PageRequest(0, 1);
 
-        System.out.println("Jugador con mas canastas de un equipo (ejemplo BCN)");
-        showStatistics3(equipoRepository.findByJugadorMaxCanastasAnotaDeEquipo("FCB"));
+        showStatisticsBestPlayer(equipoRepository.JugadorMaxCanastasEquipo("FCB", topOne));
         System.out.println("-----------------------------------------------");
 
 
@@ -123,11 +130,11 @@ public class JugadorService {
 
     }
 
-    private void showStatistics3(List<Object[]> statisticsList) {
-        for (Object[] statistic : statisticsList) {
-            System.out.println("Nombre del jugador: " + statistic[0]);
-            System.out.println("MAX canastas = " + statistic[1] + System.lineSeparator());
-        }
+    private void showStatisticsBestPlayer(Page<Jugador> jugadorPage) {
+        jugadorPage.getContent().forEach(jugador->{
+            System.out.println(jugador);
+
+        });
     }
 
 
